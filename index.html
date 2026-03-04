@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍬 CANDY CRUSH RETRO</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="crt-overlay"></div>
+
+  <div id="app">
+    <!-- Header HUD -->
+    <header class="hud">
+      <div class="hud-box">
+        <span class="hud-label">LEVEL</span>
+        <span class="hud-value" id="level-display">1</span>
+      </div>
+      <div class="hud-box title-box">
+        <h1 class="game-title">🍬 CANDY<br>CRUSH</h1>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">HIGH</span>
+        <span class="hud-value" id="high-score-display">0</span>
+      </div>
+    </header>
+
+    <!-- Score & Moves Row -->
+    <div class="score-row">
+      <div class="hud-box">
+        <span class="hud-label">SCORE</span>
+        <span class="hud-value" id="score-display">0</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">TARGET: <span id="target-display">500</span></div>
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progress-bar"></div>
+        </div>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">MOVES</span>
+        <span class="hud-value" id="moves-display">20</span>
+      </div>
+    </div>
+
+    <!-- Game Board -->
+    <div id="board-container">
+      <div id="board"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="pixel-btn" id="restart-btn">↺ RESTART</button>
+    </div>
+
+    <!-- Overlays -->
+    <div class="overlay" id="level-complete-overlay" style="display:none;">
+      <div class="overlay-box">
+        <div class="overlay-title">✨ LEVEL<br>COMPLETE! ✨</div>
+        <div class="overlay-sub" id="level-complete-score"></div>
+        <button class="pixel-btn" id="next-level-btn">NEXT LEVEL ▶</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="game-over-overlay" style="display:none;">
+      <div class="overlay-box">
+        <div class="overlay-title">💀 GAME<br>OVER 💀</div>
+        <div class="overlay-sub" id="game-over-score"></div>
+        <button class="pixel-btn" id="retry-btn">↺ RETRY</button>
+        <button class="pixel-btn secondary-btn" id="menu-btn">⌂ MENU</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="menu-overlay">
+      <div class="overlay-box">
+        <div class="overlay-title">🍬 CANDY<br>CRUSH<br>RETRO</div>
+        <div class="overlay-sub">MATCH 3 OR MORE<br>CANDIES TO SCORE!</div>
+        <button class="pixel-btn" id="start-btn">▶ START GAME</button>
+        <div class="high-score-display">BEST: <span id="menu-high-score">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+/* ========== RETRO CANDY CRUSH — PIXEL ART STYLE ========== */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --bg: #1a0a2e;
+  --bg2: #16213e;
+  --border: #7b2d8b;
+  --border-light: #e040fb;
+  --text: #f5f5f5;
+  --text-dim: #aaaaaa;
+  --gold: #ffd700;
+  --red: #FF4444;
+  --orange: #FF8800;
+  --yellow: #FFD700;
+  --green: #44CC44;
+  --blue: #4488FF;
+  --purple: #AA44FF;
+  --cell-size: 56px;
+  --gap: 4px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  image-rendering: pixelated;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  font-family: 'Press Start 2P', monospace;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── CRT Scanline Overlay ── */
+.crt-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.08) 3px,
+    rgba(0,0,0,0.08) 4px
+  );
+}
+
+/* ── App Layout ── */
+#app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* ── HUD ── */
+.hud {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-box {
+  background: var(--bg2);
+  border: 3px solid var(--border);
+  padding: 6px 10px;
+  text-align: center;
+  min-width: 80px;
+  box-shadow: 3px 3px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.05);
+}
+
+.title-box {
+  flex: 1;
+  border-color: var(--border-light);
+}
+
+.hud-label {
+  display: block;
+  font-size: 7px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.hud-value {
+  display: block;
+  font-size: 14px;
+  color: var(--gold);
+  text-shadow: 0 0 8px var(--gold);
+}
+
+.game-title {
+  font-size: 11px;
+  color: var(--border-light);
+  text-shadow: 2px 2px 0 #000, 0 0 10px var(--border-light);
+  line-height: 1.6;
+  letter-spacing: 1px;
+}
+
+/* ── Score Row ── */
+.score-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progress-label {
+  font-size: 7px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.progress-bar-outer {
+  background: #0d0d1a;
+  border: 2px solid var(--border);
+  height: 14px;
+  width: 100%;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #e040fb, #ffd700);
+  width: 0%;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px var(--border-light);
+}
+
+/* ── Board ── */
+#board-container {
+  position: relative;
+  background: var(--bg2);
+  border: 4px solid var(--border);
+  box-shadow: 0 0 20px rgba(224, 64, 251, 0.4), 5px 5px 0 #000;
+  padding: 6px;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, var(--cell-size));
+  grid-template-rows: repeat(8, var(--cell-size));
+  gap: var(--gap);
+}
+
+/* ── Candy Cells ── */
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.3);
+  transition: transform 0.1s ease;
+  user-select: none;
+}
+
+.cell:hover {
+  border-color: rgba(255,255,255,0.4);
+  transform: scale(1.05);
+}
+
+.cell.selected {
+  border-color: #fff;
+  border-width: 3px;
+  box-shadow: 0 0 12px #fff, inset 0 0 8px rgba(255,255,255,0.2);
+  animation: pulse-selected 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-selected {
+  from { box-shadow: 0 0 8px #fff; }
+  to   { box-shadow: 0 0 20px #fff, 0 0 30px rgba(255,255,255,0.5); }
+}
+
+/* ── Candy Sprites (CSS pixel-art) ── */
+.candy {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 1;
+}
+
+/* candy type backgrounds with pixel-art bevel */
+.candy-1 { background: var(--red);    box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 8px rgba(255,68,68,0.6); }
+.candy-2 { background: var(--orange); box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 8px rgba(255,136,0,0.6); }
+.candy-3 { background: var(--yellow); box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 8px rgba(255,215,0,0.6); }
+.candy-4 { background: var(--green);  box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 8px rgba(68,204,68,0.6); }
+.candy-5 { background: var(--blue);   box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 8px rgba(68,136,255,0.6); }
+.candy-6 { background: var(--purple); box-shadow: inset -3px -3px 0 rgba(0,0,0,0.4), inset 3px 3px 0 rgba(255,255,255,0.3), 0 0 8px rgba(170,68,255,0.6); }
+
+/* ── Animations ── */
+@keyframes swap-right {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(calc(var(--cell-size) + var(--gap))); }
+  100% { transform: translateX(0); }
+}
+@keyframes swap-left {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(calc(-1 * (var(--cell-size) + var(--gap)))); }
+  100% { transform: translateX(0); }
+}
+@keyframes swap-down {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(calc(var(--cell-size) + var(--gap))); }
+  100% { transform: translateY(0); }
+}
+@keyframes swap-up {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(calc(-1 * (var(--cell-size) + var(--gap)))); }
+  100% { transform: translateY(0); }
+}
+
+.anim-swap-right { animation: swap-right 0.2s ease; }
+.anim-swap-left  { animation: swap-left  0.2s ease; }
+.anim-swap-down  { animation: swap-down  0.2s ease; }
+.anim-swap-up    { animation: swap-up    0.2s ease; }
+
+@keyframes invalid-shake {
+  0%, 100% { transform: translateX(0); }
+  20%  { transform: translateX(-6px); }
+  40%  { transform: translateX(6px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+}
+.anim-shake { animation: invalid-shake 0.3s ease; }
+
+@keyframes match-burst {
+  0%   { transform: scale(1);   opacity: 1; }
+  50%  { transform: scale(1.4); opacity: 0.7; }
+  100% { transform: scale(0);   opacity: 0; }
+}
+.anim-burst { animation: match-burst 0.3s ease forwards; }
+
+@keyframes fall-in {
+  0%   { transform: translateY(-30px); opacity: 0; }
+  100% { transform: translateY(0);     opacity: 1; }
+}
+.anim-fall { animation: fall-in 0.25s ease; }
+
+@keyframes score-pop {
+  0%   { transform: translateY(0)   scale(1);   opacity: 1; }
+  100% { transform: translateY(-40px) scale(1.3); opacity: 0; }
+}
+.score-popup {
+  position: absolute;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+  z-index: 100;
+  animation: score-pop 0.8s ease forwards;
+}
+
+/* ── Controls ── */
+.controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 10px 18px;
+  background: var(--border);
+  color: #fff;
+  border: none;
+  border-bottom: 4px solid rgba(0,0,0,0.5);
+  border-right: 4px solid rgba(0,0,0,0.5);
+  cursor: pointer;
+  text-shadow: 1px 1px 0 #000;
+  transition: all 0.1s;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.pixel-btn:hover {
+  background: var(--border-light);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #000;
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+.secondary-btn {
+  background: #333;
+}
+.secondary-btn:hover {
+  background: #555;
+}
+
+/* ── Overlays ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.overlay-box {
+  background: var(--bg2);
+  border: 4px solid var(--border-light);
+  box-shadow: 0 0 30px rgba(224, 64, 251, 0.5), 8px 8px 0 #000;
+  padding: 30px 24px;
+  text-align: center;
+  max-width: 340px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.overlay-title {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--border-light);
+  text-shadow: 2px 2px 0 #000, 0 0 15px var(--border-light);
+}
+
+.overlay-sub {
+  font-size: 9px;
+  color: var(--text-dim);
+  line-height: 2;
+}
+
+.high-score-display {
+  font-size: 8px;
+  color: var(--gold);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  :root {
+    --cell-size: 40px;
+    --gap: 3px;
+  }
+  .candy { width: 30px; height: 30px; font-size: 18px; }
+  .game-title { font-size: 9px; }
+  .hud-value { font-size: 11px; }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --cell-size: 34px;
+    --gap: 2px;
+  }
+  .candy { width: 26px; height: 26px; font-size: 15px; }
+}
+
+/* ── Pixel grid pattern behind board ── */
+#board-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 8px 8px;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Cascade flash ── */
+@keyframes cascade-flash {
+  0%, 100% { box-shadow: 0 0 20px rgba(224,64,251,0.4); }
+  50%       { box-shadow: 0 0 40px rgba(224,64,251,0.9); }
+}
+#board-container.cascade {
+  animation: cascade-flash 0.3s ease;
+}
