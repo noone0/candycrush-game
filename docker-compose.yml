@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  candy-crush:
+    build: .
+    image: candy-crush-retro:latest
+    container_name: candy-crush-retro
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    labels:
+      # Traefik / Coolify labels
+      - "traefik.enable=true"
+      - "traefik.http.routers.candy-crush.rule=Host(`candy-crush.yourdomain.com`)"
+      - "traefik.http.routers.candy-crush.entrypoints=websecure"
+      - "traefik.http.routers.candy-crush.tls.certresolver=myresolver"
+      - "traefik.http.services.candy-crush.loadbalancer.server.port=80"
